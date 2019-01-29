@@ -1,0 +1,372 @@
+Script started on Sun 29 Apr 2018 09:34:14 PM EDT
+bash-4.1$ uname -a
+Linux Zeus-1 2.6.32-696.18.7.el6.centos.plus.x86_64 #1 SMP Tue Jan 9 14:11:50 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux
+bash-4.1$ ls
+item.c	item.h	Makefile  project3_kbirhan_202.c  project3Typescript_kbirhan_202
+bash-4.1$ cat item.h
+#ifndef ITEMLIST
+#define ITEMLIST
+#include <stddef.h>
+
+typedef struct _node
+{
+	char *data;  //Food Item Name
+		struct _node *next;
+} node;
+
+typedef struct _itemList
+{
+	node *head;   //Pointer to first food item for the order (alphabetical)
+		int count;  //Number of food items in the order
+} itemList;
+
+typedef struct _ordernode
+{
+	itemList *data;
+	char *deliverTo; 
+	char *restaurant;
+	struct _ordernode *next;
+} ordernode;
+#define SIZE 50
+itemList *createItem();
+int insert(char *str,itemList *s);
+void printItems(itemList *s);
+void * dmalloc(size_t size);
+void printorder(ordernode *s);
+char * stringcopy(char *s);
+#endif
+bash-4.1$ cat project3_kbirhan_202.c
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <ctype.h>
+#include "item.h"
+
+int main(){
+    ordernode *head;// this is pointer to the head of the ordernode
+    ordernode *ptr=NULL;
+	char buffer1[SIZE];//used to hold responses from the user
+	//char buffer2[10];
+	char location[SIZE];//location of the resturant
+	char restaurant[SIZE];//name of the resturant to deliver to 
+	
+	int check=1;
+	while(check){
+	    printf("new delivery order?  (y/n)\n");
+	    fgets(buffer1,5,stdin);//response getter
+	   // getchar();
+		 //chere we check if the reposne is y or  n or something else
+	    if( (buffer1[0]!='y' && buffer1[0]!='n')){
+	        printf("INVALID ENTRY. TRY AGAIN\n");
+	        continue;
+	    }
+		//here if the anser is 'y' it gets the location of the resturant and where to 
+		//deliver continually asks for food item until the 
+	    else if(buffer1[0]=='y'){
+	        ordernode * neworder=NULL;
+			neworder=(ordernode *) dmalloc(sizeof(ordernode));
+			neworder->data=NULL;
+			neworder->deliverTo=NULL;
+			neworder->restaurant=NULL;
+			neworder->next=NULL;
+	        printf("Enter location of delivery\n");
+	        fgets(location,99,stdin);
+	        location[strlen(location)-1]='\0';
+	        char * locptr = stringcopy(location);
+	        neworder->deliverTo=locptr;
+	        
+	        //printf("%s",location);
+	      //fflush(stdin);
+	        printf("enter resturant name to pick delivery\n");
+	        fgets(restaurant,99,stdin);
+	        restaurant[strlen(restaurant)-1]='\0';
+	        char * resptr = stringcopy(restaurant);
+	        neworder->restaurant=resptr;
+	        itemList * item=createItem();
+	        char itemname[SIZE];
+	        int l=1;
+			//this while loop continually asks for food items unitl the user
+			//insert nothing
+	        while(l){
+	            printf("enter food item\n");
+	            fflush(stdin);
+	            fgets(itemname,49,stdin);
+	            if(itemname[0]=='\n'){
+	                l=0;
+	            }
+	            else{
+	                itemname[strlen(itemname)-1]='\0';
+					
+					insert(itemname,item);
+	                continue;
+	            }
+	        }
+	        neworder->data=item;
+			//this part is where the new order entered will be inserted into the linked list
+	        if(ptr==NULL){
+	            ptr=neworder;
+	            head=neworder;
+	        }
+	        else{
+	            ptr->next=neworder;
+	           // printf("%s\n",ptr->deliverTo);
+	            ptr=neworder;
+	            //printf("%s\n",ptr->deliverTo);
+	            
+	        }
+	    }
+	    else {
+			//this prints out the orders using the printorder function implemnted in item.c
+	         printorder(head); 
+	
+	break;
+	    }
+	}
+
+
+
+	return 0;
+}
+bash-4.1$ cat item.c
+#include "item.h"
+#include <ctype.h>
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+// this method is used to compare two strings equality or inequality
+int strcmpi(char *s, char *t)
+{
+	while (*s && tolower(*s) == tolower(*t))
+	{
+		s++;
+		t++;
+	}
+	return tolower(*s) - tolower(*t);
+}
+// this method is used to allocate memory and returns pointer to the allocated memoery
+void *dmalloc(size_t size)
+{
+	void *p = malloc(size);
+	if (!p)
+	{
+		printf("memory allocation failed\n");
+		exit(1);
+	}
+	return p;
+}
+// this is a method used to copy strings returns pointer to the string
+char *stringcopy(char *s){
+	int size=strlen(s);
+	char * temp=(char *)dmalloc((size+1)*sizeof(char));
+	temp[0]='i';
+	strcpy(temp,s);
+	return temp;
+}
+/* this method allocates memory with a check for successful allocation */
+itemList *createItem(){
+	itemList * temp = (itemList *) dmalloc(sizeof(itemList));
+	temp->head=NULL;
+	temp->count=0;
+	return temp;
+}
+// this method is used to insert food item in the order delivery it accepts 
+// a string representation of the food and pointer to the item list
+int insert (char *str, itemList *s){
+	node *temp=s->head; // pointer to the head of the food item
+	char *str1=NULL; // char pointer 
+	str1= stringcopy(str);// this copies the incoming string into str1 pointer
+	
+	//this if statment check if the head is empty or not if the head is pointing to NULL 
+	//it creates malloc for a new node and sets the str1 to the new nodes data field then sets 
+	//the new node data to str1 and sets the item list head to the new node
+	if(s->head==NULL){
+		node *newnode=NULL;
+		newnode =dmalloc(sizeof(node));
+		newnode->data=NULL;
+		newnode->next=NULL;
+		newnode->data=str1;
+		s->head=newnode;
+		s->count+=1;
+
+	}
+//here it compares the head's data filed with the incoming string using string comaprator function
+//and if the string comes a head of the head data field. it creates a new node and sets the new node as the head of the item list and then it sets the older node to the 
+//next item in the list and incremnt count by one. 
+	else if(strcmpi(temp->data,str1)>0){
+		node*newnode1=NULL;// pointer to node
+		newnode1=dmalloc(sizeof(node)); // memory allocation
+		newnode1->data=NULL;//intializes 
+		newnode1->next=NULL;//initilizes 
+		newnode1->data=str1;//sets the new node's data field to to incoming string
+		newnode1->next=s->head;// sets head of the list as the next field to the new node 
+		s->head=newnode1;//sets new node as the head of the item list 
+		s->count+=1;//count incremented 
+
+
+	}
+	//in this part of the method first since we can have duplicate item in the food item it check for that. Then, iterate over the linked list 
+	//until it find a place in the linked list where the string comes a head of the the node. and it creates a new node and insert that node into the linked list.
+	else {
+		if(strcmpi(temp->data,str1)==0){
+			printf("you can't have duplicate food items in the food items\n");
+			free(str1);
+			return 0;
+		}
+
+		while((temp->next!=NULL)&& ((strcmpi(temp->next->data,str1))<0)){
+			temp=temp->next;
+		}
+		//here it check if the strings are equal again
+		if(strcmpi(temp->data,str1)==0){
+			printf("You can't have duplicate items in the food items\n");
+			free(str1);
+			return 0;
+		}
+		//here also it check if the string is equl to the next food item in the link since this part inserts both at the end and in the middle of the node
+		if((temp->next != NULL) && (strcmpi(temp->next->data,str1)==0)){
+			printf("you can't have duplicate food items in the food items\n");
+			free(str1);
+			return 0;
+		}
+		node *newnode2=NULL;//pointer 
+		 newnode2=dmalloc(sizeof(node));// allocates memory 
+		 newnode2->data=NULL;//initilizes
+		 newnode2->next=NULL;//initilies 
+		newnode2->data=str1;//sets the data to the new node as str1
+		newnode2->next = temp->next;// sets the next field of the new node as the next field of the current node
+		temp->next=newnode2;// this sets the current node next node as the new node
+		s->count+=1;// incoments counter by one
+	}
+
+	return 1;// retuns if node added successfully
+
+}
+// this method accepts pointer to an itemList and prints the food item in the linked 
+// list one by one freeing the data stored in the food item  as it prints
+void printItems(itemList *s){
+	node * head=s->head;//pointer to the head
+	node *temp;// holder for the next item
+	while(head!=NULL){
+		printf("food item: %s\n",head->data);
+		free(head->data);//frees the head 
+		temp=head;// sets temp to the current node
+		head=head->next;// moves head to the next item
+		free(temp);// frees the node
+	}
+	printf("\n");
+
+
+}
+//this is the main method that print the orders after the user is done with entering 
+//orders.
+void printorder(ordernode *s){
+	ordernode *root=NULL;// this is pointer to ordernode
+		root= s;// sets ordernode to the incoming order node
+	ordernode *temp=NULL;//another ordernode pointer 
+	printf("\n");
+	printf("LIST OF DELIVERIES\n");
+	// this while loop prints the resturant name, where to deliver to and the food items on bey one
+	// in the linked list until there is no ordernode in the linked list
+	while(root !=NULL){
+		temp=root;
+		printf("Delivery order from  %s has %d food item(s)\n",root->restaurant,root->data->count);
+		printItems(root->data);
+		free(root->data);//frees the data
+		free(root->restaurant);//frees the restaurant field
+		printf("Deliver To: %s\n",root->deliverTo);
+		printf("\n");
+		free(root->deliverTo);//fees deliverTo field
+		root=root->next;// moves pointer to the next item
+		free(temp);// fees the current ordernode
+	}
+}
+bash-4.1$ make
+gcc  -Wall -g -O0  -o project3_kbirhan_202  project3_kbirhan_202.c item.c
+bash-4.1$ valgrind --c[Klek[Kak-check=yes [roject[K[K[K[K[K[K[Kproject3_kbirhan_202
+==29845== Memcheck, a memory error detector
+==29845== Copyright (C) 2002-2015, and GNU GPL'd, by Julian Seward et al.
+==29845== Using Valgrind-3.12.0 and LibVEX; rerun with -h for copyright info
+==29845== Command: project3_kbirhan_202
+==29845== 
+new delivery order?  (y/n)
+y
+Enter location of delivery
+home
+enter resturant name to pick delivery
+Mcdonalds
+enter food item
+fries
+enter food item
+bruger
+enter food item
+drink
+enter food item
+
+new delivery order?  (y/n)
+y
+Enter location of delivery
+JC third floor
+enter resturant name to pick delivery
+Argo tea
+enter food item
+beagles
+enter food item
+medimu coffee
+enter food item
+
+new delivery order?  (y/n)
+y
+Enter location of delivery
+Engieerring bruilding
+enter resturant name to pick delivery
+panda express
+enter food item
+chiken tariyaki
+enter food item
+fried rice
+enter food item
+fried rice
+you can't have duplicate food items in the food items
+enter food item
+orange chicken
+enter food item
+
+new delivery order?  (y/n)
+n
+
+LIST OF DELIVERIES
+Delivery order from  Mcdonalds has 3 food item(s)
+food item: bruger
+food item: drink
+food item: fries
+
+Deliver To: home
+
+Delivery order from  Argo tea has 2 food item(s)
+food item: beagles
+food item: medimu coffee
+
+Deliver To: JC third floor
+
+Delivery order from  panda express has 3 food item(s)
+food item: chiken tariyaki
+food item: fried rice
+food item: orange chicken
+
+Deliver To: Engieerring bruilding
+
+==29845== 
+==29845== HEAP SUMMARY:
+==29845==     in use at exit: 0 bytes in 0 blocks
+==29845==   total heap usage: 29 allocs, 29 frees, 441 bytes allocated
+==29845== 
+==29845== All heap blocks were freed -- no leaks are possible
+==29845== 
+==29845== For counts of detected and suppressed errors, rerun with: -v
+==29845== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 4 from 4)
+bash-4.1$ make clean
+rm project3_kbirhan_202
+bash-4.1$ exit
+
+Script done on Sun 29 Apr 2018 09:41:54 PM EDT
