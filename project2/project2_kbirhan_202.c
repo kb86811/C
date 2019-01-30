@@ -3,8 +3,6 @@
 #include <string.h>
 #include "supporterFunction.h"
 #define MAX_CHAIN_BYTES  100
-//uhdudh   // "${workspaceFolder}/project2/project2_kbirhan_202"
-///Users/kedir/AppData/Local/Packages/CanonicalGroupLimited.UbuntuonWindows_79rhkp1fndgsc/LocalState/rootfs/usr/bin
 
 typedef struct _Chain
 {
