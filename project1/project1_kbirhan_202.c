@@ -7,7 +7,7 @@ const char CHAR[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 .,;!-'?";
 
 
 void ShowMenu() {
-printf("\n\snMenu choice                                                  Valid User input choices\n\n");
+printf("\n Menu choice                                                  Valid User input choices\n\n");
 printf("Enter a random number seed to generate the Tabula Recta         '1'\n");
 printf("Enter the Keyword                                               '2'\n");
 printf("Enter a message to encrypt                                      '3'\n");
