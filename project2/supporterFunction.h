@@ -1,0 +1,1 @@
+void assigner(char ele, char arr[], int *j);

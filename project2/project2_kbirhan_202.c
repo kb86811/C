@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "supporterFunction.h"
 #define MAX_CHAIN_BYTES  100
 //uhdudh
 typedef struct _Chain
@@ -8,30 +9,6 @@ typedef struct _Chain
 	size_t  Seqlen;  // Number of letters in sequence
 	unsigned char seq[MAX_CHAIN_BYTES];
 } Chain;
-
-void assigner(char ele, char arr[], int *j){
-				unsigned char A = 0;
-				unsigned char C= 1;
-				unsigned char G = 2;
-				unsigned char T = 3;
-				int val= *j;
-					if(ele==A){
-						arr[val]='A';
-						*j=val+1;
-					}
-					else if(ele==C){
-						arr[val]='C';
-						*j=val+1; //j will be incremented by one
-					}
-					else if(ele==G){
-						arr[val]='G';
-						*j=val+1;
-					}
-					else if(ele==T){
-						arr[val]='T';
-						*j=val+1;
-					}
-}
 
 void showMenu() {
 	printf("Menu choice                                                               Valid User input choices\n");
