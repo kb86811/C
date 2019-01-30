@@ -9,6 +9,29 @@ typedef struct _Chain
 	unsigned char seq[MAX_CHAIN_BYTES];
 } Chain;
 
+void assigner(char ele, char arr[], int *j){
+				unsigned char A = 0;
+				unsigned char C= 1;
+				unsigned char G = 2;
+				unsigned char T = 3;
+				int val= *j;
+					if(ele==A){
+						arr[val]='A';
+						*j=val+1;
+					}
+					else if(ele==C){
+						arr[val]='C';
+						*j=val+1; //j will be incremented by one
+					}
+					else if(ele==G){
+						arr[val]='G';
+						*j=val+1;
+					}
+					else if(ele==T){
+						arr[val]='T';
+						*j=val+1;
+					}
+}
 
 void showMenu() {
 	printf("Menu choice                                                               Valid User input choices\n");
@@ -43,6 +66,7 @@ int main(){
 
 		switch(userinput){
 			case 1:
+			{
 				printf("please enter a file name containing DNA sequence in binary\n");
 				fgets(buffer,50,stdin);
 				buffer[strlen(buffer)-1]='\0';
@@ -51,112 +75,71 @@ int main(){
 					printf("ERORR WITH OPENING FILE \n\n");
 					break;
 				}
+				//where to put read data, size of the data to read, number of data with this size to read, where to read it from
+				//fread returns 1 when reading is successfull.
 				if(fread(&dna,sizeof(Chain),1,inputfile)==1){
 					printf("inumber of characters is chracters ==%zd \n",dna.Seqlen);
-				printf("this is the number of unsigned chrs in the actual seq==%d\n",strlen(dna.seq));
+				printf("this is the number of unsigned chrs in the actual seq==%zd\n",strlen(dna.seq));
 					optiontracker++;
 					fclose(inputfile);
 				}
 
 				size =strlen(dna.seq);
 				size_t	numofchar = dna.Seqlen;
+			printf("number of chracter is %d\n",numofchar);
 				//tracker = numofchr % 4;
-				int i;
-				unsigned char A = 0;
-				unsigned char C= 1;
-				unsigned char G = 2;
-				unsigned char T = 3;
-				int j=0;
-				int k=0;
+				int j=0;  //a counter that is used to insert each read symbols to chrs b
+				int itracker=-1;
 				for(int i=0;i<size;i++){
-
 					unsigned char chr=dna.seq[i];//10101010
-					unsigned char char1=chr>>6;//00000010
-					if(char1==A){
-						chrs[j]='A';
-						j++;
+					itracker++;
+					for(int k=0;k<4;k++){
+						unsigned char char1;
+						unsigned char char2;
+						unsigned char char3;
+						unsigned char char4;
+						if(k==0){
+						 char1=chr>>6;//00000010
+						assigner(char1,chrs,&j);
+						if(j>=numofchar)
+										break;
+						}
+							else if(k==1){
+								 char2=chr>>4;//00001010
+								char2=char2 & 3;//00000010
+								assigner(char2,chrs,&j);
+									if(j>=numofchar)
+										break;
 
-					}
-					else if(char1== C){
-						chrs[j]='C';
-						j++;
-					}
-					else if(char1== G){
-						chrs[j]='G';
-						j++;
-					}
-					else if(char1== T){
-						chrs[j]='T';
-						j++;
-					}
-					if(j>=numofchar)
-						break;
-					unsigned char char2=chr>>4;//00001010
-					char2=char2 & 3;//00000010
 
-					if(char2==A){
-						chrs[j]='A';
-						j++;
-					}
-					else if(char2== C){
-						chrs[j]='C';
-						j++;
-					}
-					else if(char2== G){
-						chrs[j]='G';
-						j++;
-					}
-					else if(char2== T){
-						chrs[j]='T';
-						j++;
-					}
-					if(j>numofchar)
-						break;
-					unsigned char char3 = chr>>2; //10101000
-					char3=char3 & 3;
+						}
+							else if (k==2){
+								char3 = chr>>2; //10101000
+								char3=char3 & 3;
+								assigner(char3,chrs,&j);
+								if(j>=numofchar)
+										break;
 
-					if(char3==A){
-						chrs[j]='A';
-						j++;
-					}
-					else if(char3== C){
-						chrs[j]='C';
-						j++;
-					}
-					else if(char3== G){
-						chrs[j]='G';
-						j++;
-					}
-					else if(char3== T){
-						chrs[j]='T';
-						j++;
-					}
 
-					if(j>numofchar)
-						break;
-					unsigned char char4=chr & 3;
+						}
+							else{
+							 char4=chr & 3;
+							assigner(char4,chrs,&j);
+							if(j>=numofchar)
+								break;
 
-					if(char4==A){
-						chrs[j]='A';
-						j++;
+
+						}
+						
 					}
-					else if(char4== C){
-						chrs[j]='C';
-						j++;
-					}
-					else if(char4== G){
-						chrs[j]='G';
-						j++;
-					}
-					else if(char4== T){
-						chrs[j]='T';
-						j++;
-					}
+					printf("j is %d\n",j);
 				}
 				printf("j==%d\n",j);
 				chrs[numofchar]='\0';
-				//printf(" len is %s\n %d\n",chrs,strlen(chrs));
+
+				//printf(" len is %s\n %d\n i iterates %d times",chrs,strlen(chrs),itracker);
 				break;
+			}
 			case 2:
 				if(optiontracker!=1)
 					break;
