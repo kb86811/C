@@ -1,0 +1,20 @@
+chain 1 
+please choose from the menu above
+1
+please enter a file name containing DNA sequence in binary
+chain1.dat
+inumber of characters is chracters ==96
+this is the number of unsigned chrs in the actual seq==24
+j==96
+AGCTCCGTACAGTAGCGCCTTCTTATATGCGATTAATTCTAGACACAGTGACCAAGTCAACAGCACGCTTTGGCAGCAGCGCAAGGGTCCTGAGAA
+AGCTCCGTACAGTAGCGCCTTCTTATATGCGATTAATTCTAGACACAGTGACCAAGTCAACAGCACGCTTTGGCAGCAGCGCAAGGGTCCTGAGAA
+
+
+chain 2
+please enter a file name containing DNA sequence in binary
+chain2.dat
+inumber of characters is chracters ==73
+this is the number of unsigned chrs in the actual seq==19
+j==73
+AATGGAATAAGTCTATTGTATTCCCAGTCAGGCTCAATCCTGCTTTACAACGCAACTAGACGGTGGGGTCTTA
+AATGGAATAAGTCTATTGTATTCCCAGTCAGGCTCAATCCTGCTTTACAACGCAACTAGACGGTGGGGTCTTA
